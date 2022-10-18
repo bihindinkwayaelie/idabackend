@@ -11,3 +11,11 @@ class Sendmoney(models.Model):
         ordering=['created']
     def __str__(self):
         return self.sender
+
+class Registration(models.Model):
+    sender = models.CharField(max_length= 255)
+    email = models.CharField(max_length=255)
+    phone = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.sender

@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from .models import Sendmoney
+from .models import Registration
 from .serializers import *
 
 # Create your views here.
@@ -30,6 +31,26 @@ def sendoneyDetail(request, pk):
         serializer = SendmoneySerializer( onesend )
         return JsonResponse(serializer.data)
     
-    elif request.method == 'PUT':
+    elif request.method =='PUT':
+        data =JSONParser().parse(request)
+        serializer = SendmoneySerializer(onesend, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.data, status=400)
+    elif request.method == "DELETE":
+        onesend.delete()
+        return JsonResponse({'message':'delete succfhfd'}, status=201)
+@csrf_exempt 
+def Regist(request):
+    if request.method == 'GET':
+        getregistration = Registration.objects.all()
+        serialreg = RegistrationSerializer(getregistration, many=True)
+        return JsonResponse(serialreg.data, safe=False)
+    elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = Sendmoney.ser
+        serializer = RegistrationSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
