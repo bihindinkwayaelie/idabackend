@@ -10,3 +10,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration 
         fields = ['sender','email','phone']
+
+class LoanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Loan
+        fields=['id','amount','sender','receiver','created']

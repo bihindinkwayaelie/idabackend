@@ -19,3 +19,13 @@ class Registration(models.Model):
 
     def __str__(self):
         return self.sender
+
+class Loan(models.Model):
+    amount=  models.FloatField(max_length=255, default=0)
+    sender  = models.CharField(max_length=255)
+    receiver =  models.CharField(max_length=255)
+    created  =   models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering=['created']
+    def _str_(self):
+        return self.sender
