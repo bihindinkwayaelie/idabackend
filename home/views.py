@@ -10,9 +10,15 @@ from django.http import Http404 #to treat not found
 from rest_framework.views import APIView #Apiview class
 from rest_framework.response import Response #response
 from rest_framework import status #status code
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 # Create your views here.
-@csrf_exempt 
+@csrf_exempt
+@api_view(['GET','POST'])
+@permission_classes([IsAuthenticated])
 def sendmoney(request):
     if request.method == 'GET':
         sendnow = Sendmoney.objects.all()
@@ -97,3 +103,19 @@ class LoanApiDetail(APIView):
         loan = self.get_object(pk)
         loan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class LoginApi(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,context={'request':request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response(
+            {
+                'token':token.key,
+                'userId':user.pk,
+                'email':user.email,
+                'first_name':user.first_name,
+                'last_name':user.last_name
+            }
+        )
